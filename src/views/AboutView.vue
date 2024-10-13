@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import commonApi from '@/api/commonApi'
 
 const posts = ref([])
@@ -39,15 +39,16 @@ const currentPage = ref(1)
 const itemsPerPage = ref(10)  
 const totalPosts = ref(0)
 const isLoading = ref(false)
+const totalPages = ref(0)
 
-const totalPages = computed(() => Math.ceil(totalPosts.value / itemsPerPage.value))
 
 const getPaginatedPostsData = async () => {
   isLoading.value = true
   try {
     const response = await commonApi.getMyPosts(currentPage.value, itemsPerPage.value)
-    posts.value = response.posts  // Assign fetched posts to the posts array
-    totalPosts.value = response.totalPosts  // Set total number of posts
+    posts.value = response.posts  
+    totalPages.value = response.totalPages
+    totalPosts.value = response.totalPosts 
   } catch (error) {
     console.error('Error fetching paginated posts:', error)
   } finally {
